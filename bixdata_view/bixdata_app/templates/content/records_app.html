@@ -1,0 +1,220 @@
+<script src="https://cdn.jsdelivr.net/npm/jq-pagination/js/jquery.jqpagination.min.js"></script>
+
+
+<script type="text/javascript">
+    $("#tables").ready(function () {
+
+
+        $(document).keydown(function (e) {
+            if (e.which == 116) {
+                e.preventDefault();
+                refresh()
+            } else if (e.ctrlKey && e.which == 75) {
+                e.preventDefault();
+                $("#searchTerm").focus();
+            }
+        });
+
+        $("#linked-table-modal").on("hidden.bs.modal", function () {
+            $(this).find('#linked-table-modal-content').html("");
+        });
+
+        refresh()
+    })
+
+
+
+
+    function refresh() {
+        var serialized_data = [];
+        console.info('referesh:');
+        console.info('refresh2')
+        serialized_data.push({
+            name: 'tableid',
+            value: '{{tableid}}'
+        });
+
+        serialized_data.push({
+            name: 'searchTerm',
+            value: $("#searchTerm").val()
+        });
+        serialized_data.push({
+            name: 'viewid',
+            value: $("#viewid").val()
+        });
+
+        serialized_data.push({
+            name: 'currentpage',
+            value: $('#my-pagination').data('currentpage')
+        });
+
+        serialized_data.push({
+            name: 'order_field',
+            value: $('#content-table').find('#block_records_table').data('order-field')
+        });
+        serialized_data.push({
+            name: 'order',
+            value: $('#content-table').find('#block_records_table').data('order')
+        });
+
+
+        //$("#records_table_container").load('/loading/');
+        $("#records_table_container").load('/loading/', function () {
+            $.ajax({
+                type: "POST",
+                url: "{% url 'get_records_table_app' %}",
+                data: serialized_data,
+                success: function (response) {
+
+                    $("#records_table_container").html(response);
+                },
+                error: function (response) {
+
+                    $("#records_table_container").html(response);
+                }
+            });
+        });
+    }
+
+    $("#searchTerm").ready(function () {
+        $("input").keypress(function () {
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if (keycode == '13') {
+                var serialized_data = [];
+                serialized_data.push({
+                    name: 'table',
+                    value: '{{tableid}}'
+                });
+                serialized_data.push({
+                    name: 'searchTerm',
+                    value: $("#searchTerm").val()
+                });
+                serialized_data.push({
+                    name: 'viewid',
+                    value: null
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "{% url 'block_records_table' %}",
+                    data: serialized_data,
+                    success: function (response) {
+                        $("#records_table_container").html(response);
+                    },
+                    error: function () {
+                        $("#records_table_container").html(response);
+                    }
+                });
+            }
+        });
+    });
+
+</script>
+
+<div id="content-records" style="height: 98%">
+    <div class="" style="width: 100%; height: 99%; margin-top: 1%">
+        <!--Content tables start-->
+        <div id="block-records-search-container" class="" style="height: 100%;">
+            <div id="content-table" class="card mb-4" style="height: 100%; box-shadow:none !important;"> <!--card-->
+                <div id="content-card" class="card-body" style="height: 100%; padding: 5px; background-color: rgb(251 251 251) !important; box-shadow: unset !important;"> <!--card-body-->
+                    <!-- Views -->
+                    <!-- Views end -->
+                    <div id="search">
+                        <div class="text-center">
+                        <div class="text-center">
+                            <div class="row">
+                                <div class="row" style="width: 100%; padding-right:0">
+                                    <div style="padding-left: 5px; padding-right: 5px; padding-bottom: 5px; margin: auto">
+                                        <select id="viewid" class="form-select" aria-label="Default select example"
+                                                style="width: 20%; float: left" onchange="refresh()">
+                                            {% for view in views %}
+                                                {% if view.id ==  selected_view%}
+                                                    <option selected value="{{ view.id }}">{{ view.name }}</option>
+                                                {% else %}
+                                                    <option value="{{ view.id }}">{{ view.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <input class="form-control me-2" type="search"
+                                               placeholder="Ricerca ( Ctrl + K )"
+                                               aria-label="Search" style="width: 30%; float: left; margin: 0 !important" id="searchTerm"
+                                               autocomplete="off"
+                                               onkeydown="if(event.keyCode === 13) { event.preventDefault(); refresh(); }">
+                                        <button class="btn btn-outline-danger records-button" type="button"
+                                                style=" float: left; margin: 0 !important" onclick="refresh()">Cerca
+                                        </button>
+                                        <button class="btn btn-outline-danger me-md-2 center-icon-button records-button" style="width: 15%; float: right" type="button" onclick="refresh()">
+                                            <span class="material-symbols-outlined">cached</span>
+                                        </button>
+                                        <button class="btn btn-outline-danger me-md-2 center-icon-button records-button" type="button" style="width: 15%; float: right" onclick="newRecord('{{tableid}}')">
+                                            <span class="material-symbols-outlined">add</span>
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+              
+                    <script>
+                        function underConstruction(el) {
+                            $.ajax({
+                                url: "{% url 'under_construction' %}",
+                                type: "GET",
+                                success: function (data) {
+                                    $(el).html(data);
+                                }
+                            });
+                        }
+                    </script>
+                    <!-- Results start-->
+                    <div id="result-tabs" style="height: 92%">
+                        <!-- Nav menu start -->
+
+                        <!-- Nav menu end -->
+                        <!-- Nav content start-->
+                        <div class="tab-content" id="myTabContent" style="height: 100%">
+                            {% if active_panel_setting == 'table' %}
+                                <div class="tab-pane fade show active" id="records_table_container" role="tabpanel"
+                                     aria-labelledby="tutti-tab" tabindex="0" style="height: 100%;overflow: hidden;">
+                                    {{ records_table }}
+                                </div>
+                                <div class="tab-pane fade" id="group-tab-pane" style="height: 100%; overflow: hidden"
+                                     role="tabpanel" aria-labelledby="grouped-tab" tabindex="0">
+                                </div>
+                            {% else %}
+                                <div class="tab-pane fade" id="records_table_container" role="tabpanel"
+                                     aria-labelledby="tutti-tab" tabindex="0" style="height: 100%;overflow: hidden;">
+                                    {{ records_table }}
+                                </div>
+                                <div class="tab-pane fade show active" id="group-tab-pane"
+                                     style="height: 100%; overflow: hidden"
+                                     role="tabpanel" aria-labelledby="grouped-tab" tabindex="0">
+                                </div>
+                            {% endif %}
+                            <div class="tab-pane fade" id="report-tab-pane" style="height: 100%; width: 100%"
+                                 role="tabpanel" aria-labelledby="report-tab" tabindex="0">
+                            </div>
+                            <div class="tab-pane fade " id="chart-tab-pane" role="tabpanel" aria-labelledby="chart-tab"
+                                 tabindex="0" style="overflow: hidden">
+                            </div>
+                            <div class="tab-pane fade " id="calendar-tab-pane" role="tabpanel"
+                                 aria-labelledby="calendar-tab" tabindex="0" style="overflow: hidden">
+                            </div>
+                            <div class="tab-pane fade" id="kanban-tab-pane" role="tabpanel" aria-labelledby="kanban-tab"
+                                 tabindex="0" style="height: 100%;width: 100%">
+                            </div>
+                            <div class="tab-pane fade" id="gantt-tab-pane" role="tabpanel" aria-labelledby="tutti-tab"
+                                 tabindex="0" style="height: 100%;overflow-x: scroll; overflow-y: scroll">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- nav content end-->
+                </div>
+                <!-- Results end-->
+            </div>
+        </div>
+        <div id="block-record-card-container" class="col-xl-4 col-md-4 mb-4" style="height: 100%"></div>
+    </div>
+</div>

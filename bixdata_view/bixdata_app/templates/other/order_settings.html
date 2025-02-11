@@ -1,0 +1,173 @@
+<style>
+
+    .field-option, #save-button {
+        display: none;
+    }
+
+
+    .table-button {
+        width: 100%;
+        margin-top: 5%;
+    }
+
+</style>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        $(".table-button").click(function () {
+            const tableId = $(this).data('table-id');
+            $('#current-tableid').val(tableId);
+            $('.field-option').show();
+            $('#save-button').show()
+            $('.field-option').data('table-id', tableId)
+        });
+
+        $(".field-option").click(function () {
+            const tableId = $(this).data('table-id');
+            getTableFields(tableId, $(this).text());
+        });
+
+        function getTableFields(tableId, type) {
+            $.ajax({
+                url: '/get_table_fields/',
+                type: 'POST',
+                data: {
+                    tableid: tableId,
+                    type: type
+                },
+                success: function (response) {
+                    console.info('Table fields:', response.fields);
+                    $('#response-container').html(response)
+                }
+            });
+        }
+
+        function displayFields(fields) {
+            var fieldContainer = $('#response-container');
+            fieldContainer.empty();
+
+            fields.forEach(function (field, index) {
+
+                var fieldElement = $('<div>', {
+                    id: field,
+                    class: 'drag-item',
+                    'data-order': index
+                });
+
+                var checkboxElement = $('<input>', {
+                    type: 'checkbox',
+                    class: 'form-check-input',
+                    id: 'exampleCheck1'
+                });
+
+
+                var optionsDiv = $('<div>', {
+                    class: 'options-div',
+                    style: 'display: none;'
+                });
+
+                var spanElement1 = $('<span>', {
+                    text: 'Option 1'
+                });
+                optionsDiv.append(spanElement1);
+
+                var spanElement2 = $('<span>', {
+                    text: 'Option 2'
+                });
+                optionsDiv.append(spanElement2);
+
+                var buttonElement = $('<button>', {
+                    class: 'btn btn-primary btn-toggle',
+                    text: 'Options'
+                }).on('click', function () {
+                    optionsDiv.slideToggle();
+                });
+
+                fieldElement.append(checkboxElement);
+                fieldElement.append($('<span>', {text: field.fieldid}));
+                fieldElement.append(buttonElement);
+                fieldElement.append(optionsDiv);
+
+                fieldContainer.append(fieldElement);
+            });
+
+            drake.containers.push(fieldContainer.get(0));
+        }
+
+
+    });
+
+    function saveFieldsOrder() {
+        alert('salva');
+        var fieldOrder = [];
+        $('.drag-item').each(function () {
+            var fieldId = this.id;
+            var fieldOrderValue = $(this).attr('data-order');
+            if ($(this).find(".form-check-input").first().is(":checked")) {
+                alert("Checkbox is checked");
+            }
+            fieldOrder.push({
+                id: fieldId,
+                order: fieldOrderValue,
+            });
+        });
+
+        $.ajax({
+            url: '/save_fields_order/',
+            type: 'POST',
+            data: {
+                fields: JSON.stringify(fieldOrder),
+                tableid: $('#current-tableid').val()
+            },
+            success: function (response) {
+                console.log('Field order saved:', response);
+            }
+        });
+    }
+
+</script>
+
+<div id="order_settings">
+    <div style="float: left">
+        Utenti <br/>
+        {% for user in users %}
+            <button class="btn btn-secondary table-button">{{ user.username }}</button>
+            <br>
+        {% endfor %}
+
+    </div>
+    <div style="margin-left: 20px;float: left">
+        Tabelle<br/>
+        {% for table in tables %}
+            <button class="btn btn-secondary table-button" data-table-id="{{ table.id }}">{{ table.id }}</button>
+            <br>
+        {% endfor %}
+    </div>
+
+    <div style="margin-left: 20px; float: left;" id="settings-container">
+        Contesto<br/>
+        <button class="btn btn-secondary field-option" value="campiinserimento">campiinserimento</button>
+        <br>
+        <br>
+        <button class="btn btn-secondary field-option" value="risultatiricerca">risultatiricerca</button>
+        <br>
+        <br>
+        <button class="btn btn-secondary field-option" value="keylabels">keylabel</button>
+        <br>
+        <br>
+        <button id="save-button" onclick="saveFieldsOrder()" class="btn btn-primary">Salva</button>
+    </div>
+
+    <div id="response-container" style="float: left; margin-left: 20px;"></div>
+
+    <input id="current-tableid" type="hidden">
+</div>
+
+
+
+
+
+

@@ -1,0 +1,68 @@
+{% load static %}
+
+<style>
+  .scrollable-row {
+    height: 80vh; /* Imposta l'altezza fissa per la row (80% della viewport height) */
+    overflow-y: auto; /* Abilita lo scroll verticale */
+  }
+
+  .card {
+    height: 100%; /* Assicura che la card occupi tutta l'altezza del contenitore */
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+</style>
+
+<div class="container-fluid" style="height: 100%">
+  {% if users|length == 1 or users|length == 2 %}
+    <div class="row scrollable-row" style="height: 100%">
+  {% else %}
+    <div class="row row-cols-2 scrollable-row" style="height: 100%">
+  {% endif %}
+
+    {% for user in users %}
+      {% if users|length == 1 or users|length == 2 %}
+        <div class="col" style="height: 100%; padding: 0.35%">
+      {% else %}
+        <div class="col" style="padding: 0.35%">
+      {% endif %}
+
+        <div class="card">
+          <div class="card-body">
+
+            <div class="container-fluid" style="width: 100%; height: 50%; margin:0">
+              <div class="row" style="">
+                <div class="col d-flex align-items-center">
+                  <img src="{% static 'images/users/' %}{{ user.username }}.png?v={{ date }}"
+                       alt="{{ user.username }}"
+                       class="rounded-circle"
+                       style="width: 10vh; margin-right: 1%;">
+                  <h3 class="card-title mb-0">{{ user.first_name }} {{ user.last_name }}</h3>
+                </div>
+              </div>
+                <div class="row" style="height: 80% !important;">
+                    {% if user.taskblock|safe != '' %}
+                        <div class="col col-6" style="border: solid 1px grey">
+                            <div id="task-stats-container" style="height: 100%">
+                                {{ user.taskblock|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    <div class="col col-6" style="border: solid 1px grey">
+                            {{ user.chartblock|safe }}
+                    </div>
+                </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    {% endfor %}
+
+  </div>
+</div>

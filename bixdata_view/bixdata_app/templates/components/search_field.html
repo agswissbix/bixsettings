@@ -1,0 +1,81 @@
+{% if search_field.fieldtypeid == 'Parola' %}
+    <div class="col">
+        {{ search_field.fieldtypeid }}
+        <i class="mdi mdi-dots-vertical btn" id="parolaDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
+        <br/>
+        <br>
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" style="" name="{{ search_field.fieldid }}">
+        <div class="dropdown">
+            <ul class="dropdown-menu" aria-labelledby="parolaDropdown">
+                <li><a class="dropdown-item" href="#">Almeno un valore</a></li>
+                <li><a class="dropdown-item" href="#">Nessun valore</a></li>
+                <li><a class="dropdown-item" href="#">Diverso da</a></li>
+            </ul>
+        </div>
+    </div>
+    {% elif search_field.fieldtypeid == 'Numero' %}
+    <div class="col">
+        {{ search_field.fieldtypeid }}
+        <i class="mdi mdi-dots-vertical btn" id="numeroDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
+        <br/>
+        da<input class="form-control me-2" type="number" placeholder="Search" aria-label="Search" oninput="fillSecondInput(this)">
+        a<input class="form-control me-2" type="number" placeholder="Search" aria-label="Search">
+        <div class="dropdown">
+            <ul class="dropdown-menu" aria-labelledby="numeroDropdown">
+                <li><a class="dropdown-item" href="#">Almeno un valore</a></li>
+                <li><a class="dropdown-item" href="#">Nessun valore</a></li>
+                <li><a class="dropdown-item" href="#">Diverso da</a></li>
+            </ul>
+        </div>
+    </div>
+    {% elif search_field.fieldtypeid == 'Data' %}
+    <div class="col">
+        {{ search_field.fieldtypeid }}
+        <i class="mdi mdi-dots-vertical btn" id="dataDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
+        <br/>
+        da<input class="form-control me-2" type="date" placeholder="Search" aria-label="Search" onchange="fillSecondInput(this)">
+        a<input class="form-control me-2" type="date" placeholder="Search" aria-label="Search">
+        <div class="dropdown">
+            <ul class="dropdown-menu" aria-labelledby="dataDropdown">
+                <li><a class="dropdown-item" href="#">Almeno un valore</a></li>
+                <li><a class="dropdown-item" href="#">Nessun valore</a></li>
+                <li><a class="dropdown-item" href="#">Diverso da</a></li>
+                <li><a class="dropdown-item" href="#">Passato</a></li>
+                <li><a class="dropdown-item" href="#">Futuro</a></li>
+                <li><a class="dropdown-item" href="#">Questa settimana</a></li>
+                <li><a class="dropdown-item" href="#">Questo mese</a></li>
+            </ul>
+        </div>
+    </div>
+    {% elif search_field.fieldtypeid == 'Utente' %}
+    <div class="col">
+        {{ search_field.fieldtypeid }}
+        <i class="mdi mdi-dots-vertical btn" id="utenteDropdown" data-bs-toggle="dropdown" aria-expanded="false"></i>
+        <br/>
+        <br>
+        <div class="col">
+            <select class="form-select" id="inputGroupSelect01">
+            <option selected>Choose...</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+            </select>
+        </div>
+        <div class="dropdown">
+            <ul class="dropdown-menu" aria-labelledby="utenteDropdown">
+                <li><a class="dropdown-item" href="#">Almeno un valore</a></li>
+                <li><a class="dropdown-item" href="#">Nessun valore</a></li>
+                <li><a class="dropdown-item" href="#">Diverso da</a></li>
+                <li><a class="dropdown-item" href="#">Utente corrente</a></li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+
+
+<script>
+    function fillSecondInput(input) {
+        var secondInput = input.nextElementSibling;
+        secondInput.value = input.value;
+    }
+</script>

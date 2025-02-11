@@ -1,0 +1,71 @@
+<div id="order_settings">
+    <div style="float: left">
+        Utenti <br/>
+        {% for user in users %}
+            <button class="btn btn-secondary table-button" onclick="displayTableids(this)">{{ user.username }}</button>
+            <br>
+        {% endfor %}
+    </div>
+    <div style="margin-left: 20px;float: left">
+        Tabelle<br/>
+        {% for table in tables %}
+            <div class="table-container">
+            <span class="tableid-span">{{ table.id }}</span>
+                    <input class="form-check-input mt-0" type="checkbox" value=""
+                   aria-label="Checkbox for following text input">
+            </div>
+        {% endfor %}
+    </div>
+
+    <div style="margin-left: 20px; float: left;" id="settings-container">
+        <button id="save-button" onclick="saveFieldsOrder()" class="btn btn-primary">Save</button>
+    </div>
+
+    <div id="response-container" style="float: left; margin-left: 20px;"></div>
+    <input id="current-tableid" type="hidden">
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var drake;
+        var tsi_id = [];
+
+        $(".drag-item").each(function () {
+            tsi_id.push(this);
+        });
+
+        drake = dragula(tsi_id);
+        drake.on('drop', function (el, target) {
+            updateOrder();
+        });
+    })
+
+    function displayTableids(el) {
+        $('.tableid-span').attr('data-user', $(el).text());
+
+    }
+
+</script>
+
+<style>
+    .table-container {
+        border: 1px solid black;
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+        padding: 10px;
+        justify-content: space-between;
+        background-color: white;
+
+    }
+
+    .table-button {
+        width: 100%;
+        margin-top: 5%;
+    }
+</style>
+
+
+
+

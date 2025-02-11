@@ -1,0 +1,49 @@
+@media screen and (min-width: 3340px) {
+
+    .modal-fullscreen {
+        max-width: 100% !important;
+    }
+
+    #newRecordModal > .modal-fullscreen {
+        width: 45%;
+        margin: 2% auto auto;
+        height: 80%
+    }
+
+    #recordModal > .modal-fullscreen {
+        width: 75%;
+        height: 90%;
+        margin: 1% auto auto;
+    }
+
+    #linked-table-modal > .modal-fullscreen {
+        width: 50%;
+        margin: 2% auto auto;
+        height: 85%
+    }
+
+    #newLinkedRecordModal > .modal-fullscreen {
+        width: 40%;
+        margin: 2% auto auto;
+        height: 75%
+    }
+
+    .field > textarea {
+        min-height: 200px !important;
+    }
+
+    .save-button {
+        margin-bottom: 2% !important;
+    }
+
+    .results-table-linked #results-body #results-row {
+        line-height: 24px !important;
+    }
+
+    .material-symbols-outlined {
+        font-size: 100% !important
+    }
+
+
+
+}

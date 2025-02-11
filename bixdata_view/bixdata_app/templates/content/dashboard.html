@@ -1,0 +1,223 @@
+<script>
+    var res = '{{ size }}';
+
+    $(document).ready(function () {
+        $('.block-records-table-standard').attr('data-show', 'modal')
+        console.info($('.block-records-table-standard'))
+    });
+</script>
+
+<button id="save-order-button" onclick="save_order()" class="btn btn-success" style="float: left">Salva disposizione</button>
+<select id="select-block" class="form-select" aria-label="Default select example" style="width: 10%; float: left; margin-left: 5%">
+    {% for block in block_list %}
+            <option name="blockid" value="{{ block.id }}">{{ block.name }}</option>
+    {% endfor %}
+</select>
+<button class="btn btn-primary" style="float: left" onclick="new_block()">Aggiungi</button>
+
+<button id="" onclick="setDefaultDashboard()" class="btn btn-secondary" style="float: left">Imposta dashboard come default</button>
+
+<div style="height: 90% !important; overflow:scroll !important; width: 100%">
+
+<div style=" width: 100%; height: 100%;" class="grid-stack">
+    {% for block in blocks %}
+        <div class="grid-elements" data-id="{{ block.id }}"
+             style="display: none" gs-x="{{ block.gsx }}" gs-y="{{ block.gsy }}"
+             gs-w="{{ block.gsw }}" gs-h="{{ block.gsh }}">
+
+            <div class="grid-stack-item-content" style="background-color: white;">
+                {{ block.html|safe }}
+                <i class="mdi mdi-delete" onclick="remove_widget(this)"
+                   style="position: absolute; bottom: 5px; left: 5px;"></i>
+                {% if block.widgetid == None %}
+                  <a id="dynamicHref{{ block.id }}" style="position: absolute; bottom: -2px; left: 25px; color: grey" href="" target="_blank">
+                      <span class="material-symbols-outlined">table_view</span></a>
+                {% endif %}
+            </div>
+        </div>
+
+        <script>
+            var url = window.location.href;
+            var urlSplit = url.split('/');
+            var firstpart = urlSplit[0];
+            var completeURL = firstpart + '/get_table_view/' + '{{ block.viewid }}';
+            document.getElementById("dynamicHref{{ block.id }}").href = completeURL;
+        </script>
+    {% endfor %}
+</div>
+</div>
+
+
+
+
+    <style>
+        .grid-stack-item-content {
+            overflow: hidden !important;
+        }
+
+
+
+        #results-body {
+            overflow-x: hidden;
+        }
+    </style>
+
+
+    <script>
+
+        function setDefaultDashboard() {
+            $.ajax({
+                     url: '/set_default_dashboard/',
+                    type: 'POST',
+                    data: {
+                        'dashboardid': '{{ dashboardid }}'
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        swal({
+                        title: "Dashboard default salvata",
+                        text: "La nuova dashboard default è stata salvata con successo",
+                        icon: "success",
+                        timer: 800,
+                        buttons: false,
+                    })
+                    },
+                })
+            };
+
+        button = document.createElement("button");
+        button.innerHTML = "Rimuovi";
+        button.onclick = function () {
+            remove_widget(this.parentNode.parentNode.parentNode);
+        };
+
+        function remove_widget(el) {
+            swal({
+                text: "Sei sicuro di voler eliminare questo record?",
+                buttons: ["No", "Si"],
+                icon: "warning",
+                dangerMode: true,
+            }).then(function (confirmResult) {
+                if (confirmResult) {
+                    var id = $(el).closest('.grid-elements').attr('data-id');
+                    $.ajax({
+                        url: '/remove_block/',
+                        type: 'POST',
+                        data: {
+                            'blockid': id,
+                            'size': res,
+                            'csrfmiddlewaretoken': '{{ csrf_token }}'
+                        },
+                        dataType: 'json',
+                        success: function (data) {
+                            getDashboard('{{ dashboardid }}')
+                        },
+                    });
+                }
+            });
+        }
+
+        function new_block() {
+
+            var blockid = $('#select-block').val();
+            $.ajax({
+                url: '/new_block/',
+                type: 'POST',
+                data: {
+                    'blockid': blockid,
+                    'userid': '{{ userid }}',
+                    'dashboardid': '{{ dashboardid }}',
+                    'size': res,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    getDashboard('{{ dashboardid }}')
+                },
+            });
+        }
+
+        var grid = GridStack.init();
+
+        var count = 0;
+
+        var cardBodies = document.getElementsByClassName("grid-elements");
+
+
+        for (var i = 0; i < cardBodies.length; i++) {
+
+
+            count = count + 4;
+
+
+            grid.makeWidget(cardBodies[i]); // Make the element a widget within the grid
+            //set the display to block
+            cardBodies[i].style.display = "block";
+
+            //create an icon to remove the widget
+        }
+
+        if ($('.pagination').length) {
+            $('.pagination').remove();
+        }
+
+        function save_order() {
+            var value_list = [];
+
+            $('.grid-stack-item').each(function () {
+                var gsX = parseInt($(this).attr('gs-x'), 10);
+                var gsY = parseInt($(this).attr('gs-y'), 10);
+                var gsW = parseInt($(this).attr('gs-w'), 10);
+                var gsH = parseInt($(this).attr('gs-h'), 10);
+                var id = parseInt($(this).attr('data-id'), 10);
+
+                value_list.push({
+                    'gsX': gsX,
+                    'gsY': gsY,
+                    'gsW': gsW,
+                    'gsH': gsH,
+                    'id': id,
+                    'size': res
+                });
+            });
+
+
+            $.ajax({
+                url: '/save_block_order/',
+                type: 'POST',
+                data: {
+                    'value_list': JSON.stringify(value_list),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    swal({
+                        title: "Disposizione salvata",
+                        text: "La nuova disposizione è stata salvata con successo",
+                        icon: "success",
+                        timer: 800,
+                        buttons: false,
+                    })
+                }
+            });
+        }
+    </script>
+
+
+    <style>
+        .no-padding .card-body {
+            padding: 0;
+        }
+
+        @media only screen and (max-width: 1800px) {
+            .card {
+
+            }
+        }
+
+        /* tooltip chart background */
+
+        .apexcharts-tooltip.apexcharts-theme-light {
+            background-color: white !important;
+        }
+    </style>
