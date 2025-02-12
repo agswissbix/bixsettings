@@ -170,41 +170,9 @@
                 });
             }
 
-            function getTestContent(content_page) {
-                var serialized_data = [];
-                serialized_data.push({name: 'content_page', value: content_page});
-                $.ajax({
-                    type: "POST",
-                    crossDomain: true,
-                    url: "{% url 'test_content' %}",
-                    data: serialized_data,
-                    success: function (response) {
-                        $("#content_container").html(response);
-                        $('[data-toggle="tooltip"]').tooltip();
-                    },
-                    error: function (response) {
-                        $("#content_container").html(response);
-                    }
-                });
-            }
 
-            function getTestQuery(content_page) {
-                var serialized_data = [];
-                serialized_data.push({name: 'content_page', value: content_page});
-                $.ajax({
-                    type: "POST",
-                    crossDomain: true,
-                    url: "{% url 'test_query' %}",
-                    data: serialized_data,
-                    success: function (response) {
-                        $("#content_container").html(response);
-                        $('[data-toggle="tooltip"]').tooltip();
-                    },
-                    error: function (response) {
-                        $("#content_container").html(response);
-                    }
-                });
-            }
+
+
 
             function getAdminTableSettings(page) {
 
@@ -601,32 +569,13 @@
                 $("#fullwidth_modal_newrecord").html("");
             });
 
-
-
-
             function closeLinkedTableModal() {
                 $("#linked-table-modal").modal("hide");
-            }
-
-            function getSchedulerSettings() {
-                $.ajax({
-                    type: "POST",
-                    crossDomain: true,
-                    url: "{% url 'scheduler' %}",
-                    success: function (response) {
-                        $("#content_container").html(response);
-                        $('[data-toggle="tooltip"]').tooltip();
-                    },
-                    error: function () {
-                        $("#content_container").html(response);
-                    }
-                });
             }
 
 
             function handleImageError(img) {
                 img.style.display = 'none';
-
             }
 
         </script>
@@ -783,7 +732,6 @@
                                     }
                                 </script>
 
-
                                 <script>
                                     function openSupportModal() {
                                         $('#supportModal').modal('show');
@@ -923,9 +871,6 @@
                                             </li>
                                             <li onclick="getUsersSettings()">
                                                 <a class="side-nav-txt" onclick="setColor(this)">Impostazioni utenti</a>
-                                            </li>
-                                            <li onclick="getSchedulerSettings()">
-                                                <a class="side-nav-txt" onclick="setColor(this)">Scheduler</a>
                                             </li>
                                         </ul>
                                     </div>

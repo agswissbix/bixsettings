@@ -18,11 +18,9 @@ from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from bixdata_app.views import alpha
 from bixdata_app.views import beta
-from bixdata_app.views import test_view
 from bixdata_app.views import settings_view
 from bixdata_app.views import bixdata_view
 from bixdata_app.views import script_view
-from bixdata_app.views import scheduler
 from bixdata_app.views import bixapp_view
 """from bixdata_app.views import test_react"""
 """from rest_framework_simplejwt.views import (
@@ -38,9 +36,6 @@ urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path('loading/', alpha.get_render_loading, name='loading'),
-    path('test/', test_view.test, name='test'),
-    path('test_content/', test_view.test_content, name='test_content'),
-    path('test_query/', test_view.get_test_query, name='test_query'),
     path('test_query2/', alpha.get_test_query2, name='test_query2'),
     path('test_autocomplete/', alpha.get_test_autocomplete, name='test_autocomplete'),
     path('test_gridstack/', alpha.test_gridstack, name='test_gridstack'),
@@ -114,9 +109,6 @@ urlpatterns = [
     path('generate_recordid/', beta.generate_recordid, name='generate_recordid'),
     path('update_task_status/', alpha.update_task_status, name='update_task_status'),
     path('validate_timesheet/', alpha.validate_timesheet, name='validate_timesheet'),
-    path('scheduler/', scheduler.scheduler, name='scheduler'),
-    path('save_scheduler_settings/', scheduler.save_scheduler_settings, name='save_scheduler_settings'),
-    path('run_tasks/', scheduler.run_tasks, name='run_tasks'),
     path('save_block_order/', alpha.save_block_order, name='save_block_order'),
     path('new_block/', alpha.new_block, name='new_block'),
     path('remove_block/', alpha.remove_block, name='remove_block'),
@@ -129,7 +121,6 @@ urlpatterns = [
     path('admin_table_settings/', alpha.admin_table_settings, name='admin_table_settings'),
     path('settings_table/', settings_view.settings_table, name='settings_table'),
     path('settings_table_usertables/', settings_view.settings_table_usertables, name='settings_table_usertables'),
-    path('get_query_to_test/', test_view.get_query_to_test, name='get_query_to_test'),
     path('settings_table_usertables_save/', settings_view.settings_table_usertables_save, name='settings_table_usertables_save'),
     path('settings_table_admin/', settings_view.settings_table_admin, name='settings_table_admin'),
     path('settings_table_tablefields/', settings_view.settings_table_tablefields, name='settings_table_tablefields'),
