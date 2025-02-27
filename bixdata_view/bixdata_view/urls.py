@@ -225,5 +225,6 @@ urlpatterns = [
     path('download_file/<str:filename>/', alpha.download_file, name='download_file'),
     path('get_user_settings_admin', settings_view.get_user_settings_admin, name='get_user_settings_admin'),
     path('save_theme_setting/', settings_view.save_theme_setting, name='save_theme_setting'),
+    path('get_workspaces/', settings_view.get_workspaces, name='get_workspaces'),
 
 ]

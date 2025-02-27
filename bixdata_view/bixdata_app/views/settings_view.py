@@ -844,3 +844,11 @@ def save_theme_setting(request):
             "UPDATE sys_user_settings SET value=%s WHERE userid=%s and setting='theme'", [theme, userid]
         )
     return JsonResponse({'success': True})
+
+def get_workspaces(request):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT * FROM sys_table_workspace"
+        )
+        workspaces = dictfetchall(cursor)
+    return render(request, 'admin_settings/table_settings/workspace_settings.html', {'workspaces': workspaces})
