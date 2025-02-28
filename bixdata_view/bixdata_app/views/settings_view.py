@@ -848,7 +848,21 @@ def save_theme_setting(request):
 def get_workspaces(request):
     with connection.cursor() as cursor:
         cursor.execute(
-            "SELECT * FROM sys_table_workspace"
+            "SELECT * FROM sys_table_workspace ORDER BY `order` ASC"
         )
         workspaces = dictfetchall(cursor)
     return render(request, 'admin_settings/table_settings/workspace_settings.html', {'workspaces': workspaces})
+
+
+def save_workspace_settings(request):
+    worksspaces = request.POST.get('workspaces')
+    worksspaces = json.loads(worksspaces)
+
+    with connection.cursor() as cursor:
+        for workspace in worksspaces:
+            cursor.execute(
+                "UPDATE sys_table_workspace SET name=%s, icon=%s, `order`=%s WHERE workspaceid=%s",
+                (workspace['name'], workspace['icon'], workspace['order'], workspace['workspaceid'])
+            )
+    print(worksspaces)
+    return JsonResponse({'success': True})
