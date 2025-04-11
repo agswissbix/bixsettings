@@ -10,9 +10,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}\\bixdata_view\\manage.py",
-            "args": [
-                "runserver"
-            ],
+            "args": ["runserver", "0.0.0.0:8002"],
             "django": true,
             "justMyCode": true
         }
