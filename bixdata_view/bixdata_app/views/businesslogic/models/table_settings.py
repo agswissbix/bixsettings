@@ -92,6 +92,11 @@ class TableSettings:
             'options': ['true', 'false'],
             'value': 'false'
         },
+        'scheda_active_tab': {
+            'type': 'select',
+            'options': ['Fields', 'Linked', 'Attachments', 'AttachmentsPreview'],
+            'value': 'fields'
+        },
         'popup_layout': {
             'type': 'select',
             'options': ['standard_dati', 'standard_allegati', 'allargata'],
