@@ -227,5 +227,6 @@ urlpatterns = [
     path('save_theme_setting/', settings_view.save_theme_setting, name='save_theme_setting'),
     path('get_workspaces/', settings_view.get_workspaces, name='get_workspaces'),
     path('save_workspace_settings/', settings_view.save_workspace_settings, name='save_workspace_settings'),
+    path('db_to_db/', alpha.db_to_db, name='db_to_db'),
 
 ]

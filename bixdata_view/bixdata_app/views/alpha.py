@@ -5871,6 +5871,21 @@ def logout_view(request):
     return redirect('login')
 
 
+def db_to_db(request):
+     with connections['db2'].cursor() as cursor:
+        cursor.execute("SELECT * FROM A1001")
+        result = cursor.fetchall()  # Restituisce tutte le righe
+        
+        #inserisci i dati nella tabella di destinazione nell'altro db
+        with connections['default'].cursor() as cursor2:
+            for row in result:
+                # Assicurati di avere una tabella di destinazione con la stessa struttura
+                value = row[0]  # Extract the correct value from the row
+                cursor2.execute("INSERT INTO t_test (field_test) VALUES (%s)", (value,))
+
+        return JsonResponse({'success': True})  
+
+
 
 
 

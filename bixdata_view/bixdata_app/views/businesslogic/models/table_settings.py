@@ -92,9 +92,21 @@ class TableSettings:
             'options': ['true', 'false'],
             'value': 'false'
         },
+        'card_tabs': {
+            'type': 'multiselect',
+            #here options should be a list of name and selected = true or false
+            'options': [
+                {'name': 'Campi', 'selected': True},
+                {'name': 'Collegati', 'selected': True},
+                {'name': 'Allegati', 'selected': True},
+                {'name': 'Analitica', 'selected': True},
+                {'name': 'Storico', 'selected': True},
+            ],
+            'value': 'Fields'
+        },
         'scheda_active_tab': {
             'type': 'select',
-            'options': ['Fields', 'Linked', 'Attachments', 'AttachmentsPreview'],
+            'options': ['Campi', 'Collegati', 'Allegati', 'Analitica', 'Storico'],
             'value': 'fields'
         },
         'popup_layout': {
@@ -315,8 +327,22 @@ class TableSettings:
 
         for setting_id, setting_info in settings_copy.items():
             for row in rows:
+
                 if setting_id == row['settingid']:
-                    setting_info['value'] = row['value']
+                    for setting_id, setting_info in settings_copy.items():
+                        for row in rows:
+                            if setting_id == row['settingid']:
+
+                                if setting_info['type'] == 'multiselect':
+                                    # Splitto il valore per passare una lista direttamente al template
+                                    selected_values = row['value'].split(',') if row['value'] else []
+                                    setting_info['value'] = selected_values  # <-- IMPORTANTE
+                                    for opt in setting_info['options']:
+                                        opt['selected'] = str(opt['name']) in selected_values
+
+                                else:
+                                    setting_info['value'] = row['value']
+
 
                     if row['settingid'] == 'default_viewid':
                         with connection.cursor() as cursor:

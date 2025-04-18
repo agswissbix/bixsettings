@@ -157,8 +157,20 @@ DATABASES = {
         'HOST': env('DATABASE_HOST'),
         'PORT': env('DATABASE_PORT'),
         'ATOMIC_REQUESTS': True,  # gestione automatica delle transazioni. ogni funzione della view è trattata come singola transazione e se capitano errori va in rollback
+    },
+
+    'db2': {
+        'ENGINE': env('DATABASE_ENGINE2'),
+        'NAME': env('DATABASE_NAME2'),
+        'USER': env('DATABASE_USER2'),
+        'PASSWORD': env('DATABASE_PASSWORD2'),
+        'HOST': env('DATABASE_HOST2'),
+        'PORT': env('DATABASE_PORT2'),
     }
 }
+
+DATABASE_ROUTERS = ['bixdata_app.routers.DatabaseRouter']
+
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
