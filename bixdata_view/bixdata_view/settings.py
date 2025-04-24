@@ -169,7 +169,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['bixdata_app.routers.DatabaseRouter']
+#DATABASE_ROUTERS = ['bixdata_app.routers.DatabaseRouter']
 
 
 # Password validation
