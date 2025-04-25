@@ -228,5 +228,9 @@ urlpatterns = [
     path('get_workspaces/', settings_view.get_workspaces, name='get_workspaces'),
     path('save_workspace_settings/', settings_view.save_workspace_settings, name='save_workspace_settings'),
     path('db_to_db/', alpha.db_to_db, name='db_to_db'),
+    path('get_script_page/', settings_view.get_script_page, name='get_script_page'),
+    path('get_scheduler_page/', settings_view.get_scheduler_page, name='get_scheduler_page'),
+    path('test_function', settings_view.test_function, name='test_function'),
+
 
 ]

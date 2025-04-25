@@ -866,3 +866,14 @@ def save_workspace_settings(request):
             )
     print(worksspaces)
     return JsonResponse({'success': True})
+
+
+def get_script_page(request):
+    return render(request, 'admin_settings/script_settings.html')
+
+
+def get_scheduler_page(request):
+    return render(request, 'admin_settings/scheduler_settings.html')
+
+def test_function(request):
+    return JsonResponse({'success': True})

@@ -107,11 +107,11 @@
                 });
             }
 
-            function getScript() {
+            function getScheduler() {
                 $.ajax({
                     type: "POST",
                     crossDomain: true,
-                    url: "{% url 'get_script' %}",
+                    url: "{% url 'get_scheduler_page' %}",
                     success: function (response) {
                         $("#content_container").html(response);
                         $('[data-toggle="tooltip"]').tooltip();
@@ -234,6 +234,21 @@
                     type: "POST",
                     crossDomain: true,
                     url: "{% url 'settings_user' %}",
+                    success: function (response) {
+                        $("#content_container").html(response);
+                        $('[data-toggle="tooltip"]').tooltip();
+                    },
+                    error: function (response) {
+                        $("#content_container").html(response);
+                    }
+                });
+            }
+
+            function getScript() {
+                $.ajax({
+                    type: "POST",
+                    crossDomain: true,
+                    url: "{% url 'get_script_page' %}",
                     success: function (response) {
                         $("#content_container").html(response);
                         $('[data-toggle="tooltip"]').tooltip();
@@ -872,10 +887,18 @@
                                             <li onclick="getUsersSettings()">
                                                 <a class="side-nav-txt" onclick="setColor(this)">Impostazioni utenti</a>
                                             </li>
+                                            <li onclick="getScript()">
+                                                <a class="side-nav-txt" onclick="setColor(this)">Script</a>
+                                            </li>
+                                            <li onclick="getScheduler()">
+                                                <a class="side-nav-txt" onclick="setColor(this)">Scheduler</a>
+                                            </li>
                                         </ul>
                                     </div>
     
                                 </li>
+
+                                
                             {% endif %}
 
                             {% if username|lower == 'martina.panetta' or username|lower == 'alessandro.galli' or username|lower == 'davide.crudo' %}
