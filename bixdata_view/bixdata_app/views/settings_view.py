@@ -691,12 +691,16 @@ def settings_user_newuser(request):
 
 
 def save_newuser(request):
+    username = request.POST.get('username')
     firstname = request.POST.get('firstname')
-    lastname = request.POST.get('lastname')
     password = request.POST.get('password')
-    email = request.POST.get('email')
+    lastname = request.POST.get('lastname', '')
+    email = request.POST.get('email', '')
 
-    username = firstname.lower() + '.' + lastname.lower()
+    if not username or not firstname or not password:
+        return JsonResponse({'success': False, 'error': 'I campi username, firstname e password sono obbligatori'}, status=400)
+
+    username = username.lower()
 
     with connection.cursor() as cursor:
         cursor.execute(
@@ -705,7 +709,20 @@ def save_newuser(request):
         user = dictfetchall(cursor)
 
         if user:
-            return JsonResponse({'success': False})
+            #se l'utente esiste già, aggiorna i dati
+            user_django = User.objects.filter(username=username).first()
+            if user_django:
+                user_django.first_name = firstname
+                user_django.last_name = lastname
+                user_django.email = email
+                if password: 
+                    user_django.set_password(password)
+                user_django.save()
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "UPDATE sys_user SET firstname = %s, lastname = %s, email = %s WHERE username = %s",
+                    [firstname, lastname, email, username]
+                )
         else:
 
             user = User.objects.create_user(
@@ -727,6 +744,12 @@ def save_newuser(request):
                     "INSERT INTO sys_user (id, firstname, lastname, username, disabled, superuser, bixid) VALUES (%s, %s, %s, %s, 'N', 'N', %s)",
                     [userid, firstname, lastname, username, bixid]
                 )
+            
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "INSERT INTO commonapp_userprofile (user_id, is_2fa_enabled) VALUES (%s, %s)", [bixid, 0]
+                )
+
 
             return JsonResponse({'success': True})
 
