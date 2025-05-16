@@ -876,4 +876,42 @@ def get_scheduler_page(request):
     return render(request, 'admin_settings/scheduler_settings.html')
 
 def test_function(request):
-    return JsonResponse({'success': True})
+    api_key = os.environ.get('FRESHDESK_APIKEY')
+    password = "x"
+    yourdomain = "swissbix"
+
+    url = f"https://{yourdomain}.freshdesk.com/api/v2/tickets?include=requester,description,stats&updated_since=2020-07-01&per_page=10"
+
+    response = requests.get(url, auth=(api_key, password))
+
+    headers = response.headers
+    response = json.loads(response.text)
+
+    for ticket in response:
+        field = Helperdb.sql_query_row(f"select * from user_freshdesk_tickets WHERE ticket_id='{ticket['id']}'")
+        if not field:
+            new_record = Record(tableid='freshdesk_tickets')
+            new_record.fields['ticket_id'] = ticket['id']
+            new_record.fields['subject'] = ticket['subject']
+            new_record.fields['description'] = ticket['description_text']
+            new_record.fields['created_at'] = ticket['created_at']
+            new_record.fields['closed_at'] = ticket['stats']['closed_at']
+            new_record.fields['requester_id'] = ticket['requester']['id']
+            new_record.fields['requester_name'] = ticket['requester']['name']
+            new_record.fields['requester_email'] = ticket['requester']['email']
+            new_record.fields['responder_id'] = ticket['responder_id']
+            new_record.fields['status'] = ticket['status']
+
+            new_record.save()
+        else:
+            record = Record(tableid='freshdesk_tickets', recordid=field['recordid_'])
+            record.fields['subject'] = ticket['subject']
+            record.fields['description'] = ticket['description_text']
+            record.fields['closed_at'] = ticket['stats']['closed_at']
+            record.fields['status'] = ticket['status']
+            record.fields['responder_id'] = ticket['responder_id']
+
+            record.save()
+
+
+    return JsonResponse(response, safe=False)
