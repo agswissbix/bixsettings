@@ -27,7 +27,6 @@ from datetime import timedelta
 import pdfkit
 
 import tempfile
-from docx2pdf import convert as docx2pdf_convert
 
 from .bixdata_view import *
 from .businesslogic.office_calendar import OfficeCalendar
@@ -3922,7 +3921,6 @@ def print_word(request):
         if format == 'pdf':
             with tempfile.TemporaryDirectory() as tmp_dir:
                 pdf_filename = f"{tmp_dir}/{dealname}.pdf"
-                docx2pdf_convert(filename, pdf_filename)
 
                 with open(pdf_filename, 'rb') as fh:
                     response = HttpResponse(fh.read(), content_type="application/pdf")
@@ -4427,7 +4425,6 @@ def print_word_2(request):
         if format == 'pdf':
             with tempfile.TemporaryDirectory() as tmp_dir:
                 pdf_filename = f"{tmp_dir}/{dealname}.pdf"
-                docx2pdf_convert(filename, pdf_filename)
 
                 with open(pdf_filename, 'rb') as fh:
                     response = HttpResponse(fh.read(), content_type="application/pdf")
