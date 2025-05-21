@@ -43,7 +43,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 import subprocess
 from .beta import *
 from .helper_view import *
-from htmldocx import HtmlToDocx
 import csv
 from functools import wraps
 from .businesslogic.models.table import *
