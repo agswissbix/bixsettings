@@ -109,6 +109,23 @@ class TableSettings:
             'options': ['Campi', 'Collegati', 'Allegati', 'Analitica', 'Storico'],
             'value': 'fields'
         },
+        'table_tabs': {
+            'type': 'multiselect',
+            #here options should be a list of name and selected = true or false
+            'options': [
+                {'name': 'Tabella', 'selected': True},
+                {'name': 'Kanban', 'selected': True},
+                {'name': 'Pivot', 'selected': True},
+                {'name': 'Calendario', 'selected': True},
+                {'name': 'Gallery', 'selected': True},
+            ],
+            'value': 'Fields'
+        },
+        'table_active_tab': {
+            'type': 'select',
+            'options': ['Tabella', 'Kanban', 'Pivot', 'Calendario', 'Gallery'],
+            'value': 'Tabella'
+        },
         'popup_layout': {
             'type': 'select',
             'options': ['standard_dati', 'standard_allegati', 'allargata'],
