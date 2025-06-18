@@ -27,7 +27,6 @@ from datetime import timedelta
 import pdfkit
 
 import tempfile
-from docx2pdf import convert as docx2pdf_convert
 
 from .bixdata_view import *
 from .businesslogic.office_calendar import OfficeCalendar
@@ -44,7 +43,6 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 import subprocess
 from .beta import *
 from .helper_view import *
-from htmldocx import HtmlToDocx
 import csv
 from functools import wraps
 from .businesslogic.models.table import *
@@ -3922,7 +3920,6 @@ def print_word(request):
         if format == 'pdf':
             with tempfile.TemporaryDirectory() as tmp_dir:
                 pdf_filename = f"{tmp_dir}/{dealname}.pdf"
-                docx2pdf_convert(filename, pdf_filename)
 
                 with open(pdf_filename, 'rb') as fh:
                     response = HttpResponse(fh.read(), content_type="application/pdf")
@@ -4427,7 +4424,6 @@ def print_word_2(request):
         if format == 'pdf':
             with tempfile.TemporaryDirectory() as tmp_dir:
                 pdf_filename = f"{tmp_dir}/{dealname}.pdf"
-                docx2pdf_convert(filename, pdf_filename)
 
                 with open(pdf_filename, 'rb') as fh:
                     response = HttpResponse(fh.read(), content_type="application/pdf")
@@ -5884,6 +5880,9 @@ def db_to_db(request):
                 cursor2.execute("INSERT INTO t_test (field_test) VALUES (%s)", (value,))
 
         return JsonResponse({'success': True})  
+
+
+        
 
 
 
